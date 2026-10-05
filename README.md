@@ -1,4 +1,4 @@
-# Jeu_JAVA_OOP : plateau hexagonal et IA Minimax
+# SAE_OTHELLO_PARENT : plateau hexagonal et IA Minimax
 
 > SAÉ 2.1 & 2.2 · BUT Informatique · Université de Caen Normandie · 2025-2026
 > Projet **Maven** multi-modules en **Java 26**.
