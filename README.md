@@ -1,4 +1,4 @@
-# Jeu_JAVA_OOP : plateau hexagonal et IA Minimax
+# SAE_OTHELLO_PARENT : plateau hexagonal et IA Minimax
 
 > SAÉ 2.1 & 2.2 · BUT Informatique · Université de Caen Normandie · 2025-2026
 > Projet **Maven** multi-modules en **Java 26**.
@@ -131,14 +131,12 @@ Déplacez le curseur avec `Z` `Q` `S` `D`, puis `X` pose un anneau (les joueurs 
 
 ---
 
-## Répartition du travail
+## Ma part
 
 | Partie | Auteur |
 |---|---|
-| `removeLine`, `isInField`, `getPawnsLines`, classe `Action`, interface `AI`, classe `MainAI` | _(à compléter : votre nom)_ |
-| `MinimaxAI`, `Node` | _(à compléter)_ |
-| Coordonnées (`HexagonalCoordinate`) | _(à compléter)_ |
-| Autres classes du modèle, fabriques, `CUIMain`, tests | _(à compléter)_ |
+| `removeLine`, `isInField`, `getPawnsLines`, classe `Action`, interface `AI`, classe `MainAI` | _(AHMADI Elyas)_ |
+
 
 ## Feuille de route
 
