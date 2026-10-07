@@ -5,7 +5,7 @@
 
 Moteur de jeu pour un jeu de plateau à somme nulle sur **terrain hexagonal** (règles de type YINSH, appelé « Othello » dans le sujet), ainsi qu'une **IA** qui choisit le meilleur coup grâce à l'algorithme **Minimax avec élagage Alpha-Beta**.
 
-Ce dépôt correspond au **premier livrable** : modèle du jeu, système de coordonnées hexagonales, jeu en ligne de commande et IA. L'interface graphique JavaFX est le deuxième livrable (voir [Feuille de route](#feuille-de-route)).
+Les deux modules Maven de ce dépôt correspondent au **premier livrable** : modèle du jeu, système de coordonnées hexagonales, jeu en ligne de commande et IA. L'**interface graphique JavaFX** (deuxième livrable) est un projet autonome dans [`OthelloGUI/`](OthelloGUI/README.md).
 
 ---
 
@@ -66,6 +66,8 @@ Jeu_JAVA_OOP/
 |---|---|
 | **HexagonalCoordinate** | Représente un plateau hexagonal avec deux systèmes de coordonnées interchangeables : **cubique** `[q, r, s]` (avec `q + r + s = 0`) et **doublée** `[ligne, colonne]`. Fournit voisins, directions, déplacements et alignements. Aucune dépendance au jeu. |
 | **OthelloEngine** | Règles du jeu, état immuable, actions, fabriques de terrains, IA et jeu en console. Dépend de `HexagonalCoordinate`. |
+
+Le dossier [`OthelloGUI/`](OthelloGUI/README.md) contient l'interface graphique JavaFX du deuxième livrable. C'est un projet Maven distinct, qui n'est pas déclaré dans le `pom.xml` racine : il se construit et se lance depuis son propre dossier.
 
 ---
 
@@ -144,7 +146,7 @@ Déplacez le curseur avec `Z` `Q` `S` `D`, puis `X` pose un anneau (les joueurs 
 - [x] Modèle : `State`, `Model`, actions, jetons, fabriques
 - [x] Jeu en ligne de commande (`CUIMain`, `MainAI`)
 - [x] IA Minimax avec élagage Alpha-Beta
-- [ ] Livrable 2 : interface graphique JavaFX (modes édition / jeu / retrait de ligne, réglage de l'IA, sauvegarde et chargement au format `SAE212`)
+- [x] Livrable 2 : interface graphique JavaFX, voir [`OthelloGUI/`](OthelloGUI/README.md) (modes édition / jeu / retrait de ligne, réglage de l'IA, sauvegarde et chargement au format `SAE212`). Deux réglages d'affichage restent à brancher, détaillés dans ses limites connues.
 
 ## Organisation Git
 

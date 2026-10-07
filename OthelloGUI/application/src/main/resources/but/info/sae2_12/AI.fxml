@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+
+
+<VBox spacing="8" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="but.info.sae2_12.controller.AIController">
+    <children>
+
+        <HBox spacing="10">
+            <children>
+                <Label text="Nombre d'anneau" />
+                <TextField fx:id="ringRemovedField" />
+            </children>
+        </HBox>
+
+        <HBox spacing="10">
+            <children>
+                <Label text="Victoire" />
+                <TextField fx:id="winScoreField" />
+            </children>
+        </HBox>
+
+        <HBox spacing="10">
+            <children>
+                <Label text="Ligne de 4" />
+                <TextField fx:id="nearLineField" />
+            </children>
+        </HBox>
+
+        <HBox spacing="10">
+            <children>
+                <Label text="Pion" />
+                <TextField fx:id="pawnField" />
+            </children>
+        </HBox>
+
+        <HBox spacing="10">
+            <children>
+                <Label text="Mobilité" />
+                <TextField fx:id="mobilityField" />
+            </children>
+        </HBox>
+
+        <Label text="Évaluation de la position" />
+        <ProgressBar fx:id="evaluationBar" progress="0.5" maxWidth="Infinity" style="-fx-accent: black; -fx-control-inner-background: white;" />
+
+        <Button text="Meilleur coup" onAction="#showBestMove" />
+
+    </children>
+</VBox>

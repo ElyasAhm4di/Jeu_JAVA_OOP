@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" style="-fx-padding: 10;"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="but.info.sae2_12.controller.GameController">
+
+    <!--4 boutons pour lancer une partie -->
+    <TitledPane text="Partie" collapsible="false">
+        <HBox spacing="5">
+            <Button text="Partie aléatoire" onAction="#onRandomGame"/>
+            <Button text="État test"        onAction="#onTestState"/>
+            <Button text="Ligne noire"      onAction="#onBlackLineState"/>
+            <Button text="Ligne blanche"    onAction="#onWhiteLineState"/>
+        </HBox>
+    </TitledPane>
+
+    <!-- mode edition + togglegroups -->
+    <TitledPane text="Mode édition" collapsible="false">
+        <VBox spacing="5">
+            <CheckBox fx:id="editModeCheckBox"
+                      text="Activer le mode édition"
+                      onAction="#onEditModeToggle"/>
+
+            <VBox fx:id="editSubZone" spacing="5" disable="true">
+
+                <HBox spacing="10">
+                    <Label text="Type :"/>
+                    <ToggleButton fx:id="btnRing" text="Anneau"/>
+                    <ToggleButton fx:id="btnPawn" text="Pion"/>
+                </HBox>
+
+                <!-- choisir equipe noir ou blanc -->
+                <HBox spacing="10">
+                    <Label text="Équipe :"/>
+                    <ToggleButton fx:id="btnBlack" text="Noir"/>
+                    <ToggleButton fx:id="btnWhite" text="Blanc"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </TitledPane>
+
+    <!--  colorpickers pour les couleurs des cases -->
+    <TitledPane text="Couleurs des cases" collapsible="false">
+        <VBox spacing="5">
+            <HBox spacing="10">
+                <Label text="Case normale :" prefWidth="100"/>
+                <ColorPicker fx:id="colorPicker1" onAction="#onColor1Changed"/>
+            </HBox>
+            <HBox spacing="10">
+                <Label text="Case foncée :" prefWidth="100"/>
+                <ColorPicker fx:id="colorPicker2" onAction="#onColor2Changed"/>
+            </HBox>
+            <HBox spacing="10">
+                <Label text="Case claire :" prefWidth="100"/>
+                <ColorPicker fx:id="colorPicker3" onAction="#onColor3Changed"/>
+            </HBox>
+        </VBox>
+    </TitledPane>
+
+    <!--  affichage des coordonnees -->
+    <TitledPane text="Coordonnées" collapsible="false">
+        <VBox spacing="5">
+            <CheckBox fx:id="showCoordsCheckBox"
+                      text="Afficher les coordonnées"
+                      onAction="#onShowCoordsToggle"/>
+            <ListView fx:id="coordModeListView" prefHeight="60"/>
+        </VBox>
+    </TitledPane>
+
+    <!-- slider epaisseur des bordures -->
+    <TitledPane text="Épaisseur des bordures" collapsible="false">
+        <HBox spacing="10">
+            <Label text="Épaisseur :"/>
+            <Slider fx:id="borderSlider"
+                    min="1" max="5" value="1"
+                    showTickLabels="true"
+                    showTickMarks="true"
+                    majorTickUnit="1"
+                    snapToTicks="true"
+                    prefWidth="150"/>
+            <Label fx:id="borderValueLabel" text="1"/>
+        </HBox>
+    </TitledPane>
+
+</VBox>

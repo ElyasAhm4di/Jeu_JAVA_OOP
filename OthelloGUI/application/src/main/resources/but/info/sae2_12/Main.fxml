@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane prefHeight="440.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="but.info.sae2_12.controller.MainController">
+   <top>
+      <fx:include source="Menu.fxml" fx:id="menu"/>
+   </top>
+   <center>
+      <fx:include source="Central.fxml" fx:id="central"/>
+   </center>
+   <left>
+      <fx:include source="AI.fxml" fx:id="aI"/>
+   </left>
+   <right>
+      <fx:include source="GameController.fxml" fx:id="game"/>
+   </right>
+   <bottom>
+      <fx:include source="Bottom.fxml" fx:id="bottom"/>
+   </bottom>
+</BorderPane>
