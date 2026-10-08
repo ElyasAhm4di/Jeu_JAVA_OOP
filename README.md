@@ -1,137 +1,79 @@
 # SAE Othello : plateau hexagonal et IA Minimax
 
-SAÉ 2.1 et 2.2, BUT Informatique, Université de Caen Normandie, 2025-2026. Projet Maven multi-modules en Java 26.
+SAÉ 2.1 et 2.2 · BUT Informatique · Université de Caen Normandie · 2025-2026 · Java 26, Maven multi-modules
 
-Ce dépôt contient le moteur d'un jeu de plateau à somme nulle sur terrain hexagonal (les règles ressemblent à celles du YINSH, même si le sujet l'appelle « Othello »), et une IA qui choisit son coup avec l'algorithme Minimax et l'élagage alpha-bêta.
+Moteur d'un jeu de plateau à somme nulle sur terrain hexagonal (règles de type YINSH, appelé « Othello » dans le sujet) et IA qui joue avec l'algorithme Minimax et l'élagage alpha-bêta.
 
-Les deux modules Maven forment le premier livrable : le modèle du jeu, le système de coordonnées hexagonales, une version en ligne de commande et l'IA. L'interface graphique JavaFX, deuxième livrable, est un projet à part dans [`OthelloGUI/`](OthelloGUI/README.md).
+| Livrable | Contenu | Emplacement |
+|---|---|---|
+| 1 | Coordonnées hexagonales, modèle du jeu, jeu en console, IA | `HexagonalCoordinate/`, `OthelloEngine/` |
+| 2 | Interface graphique JavaFX | [`OthelloGUI/`](OthelloGUI/README.md) (projet Maven autonome) |
 
----
+## Règles
 
-## Les règles
+- Terrain hexagonal. Chaque joueur place 5 anneaux de sa couleur.
+- À son tour, un joueur déplace un de ses anneaux en ligne droite selon l'un des 6 axes (NO, NE, E, SE, SO, O). Un anneau ne saute pas un autre anneau.
+- Un anneau qui survole des pions s'arrête sur la première case libre qui suit. Les pions survolés changent de couleur, et un pion de la couleur de l'anneau reste sur la case de départ.
+- Cinq pions alignés de même couleur : leur propriétaire retire la ligne et un de ses anneaux. Plusieurs lignes peuvent se retirer à la suite.
+- Le premier joueur qui a retiré 3 anneaux gagne. Si le joueur courant ne peut plus déplacer aucun anneau, la partie est nulle.
 
-Le terrain est un hexagone. Au début de la partie, chaque joueur place 5 anneaux de sa couleur.
-
-À son tour, un joueur déplace un de ses anneaux en ligne droite, selon l'un des six axes (NO, NE, E, SE, SO, O). Un anneau ne peut pas sauter par-dessus un autre anneau. S'il survole des pions, il doit s'arrêter sur la première case libre juste après eux. Les pions survolés changent de couleur, et un pion de la couleur de l'anneau est laissé sur sa case de départ.
-
-Quand cinq pions de la même couleur sont alignés, leur propriétaire retire la ligne et l'un de ses anneaux. Plusieurs lignes peuvent se retirer à la suite. Le premier qui a retiré trois anneaux gagne. Si plus aucun anneau du joueur courant ne peut bouger, la partie est nulle.
-
----
-
-## Organisation du dépôt
+## Structure
 
 ```
-sae_othello_parent/
-├── pom.xml                         POM parent (versions de Java et de JUnit)
-├── README.md
-├── .gitignore
-├── .github/workflows/maven.yml     Intégration continue : mvn verify
-│
-├── HexagonalCoordinate/            Module 1 : coordonnées hexagonales, réutilisable
-│   ├── pom.xml
-│   └── src/
-│       ├── main/java/fr/saegroupe8/iut/
-│       │   ├── Coordinate/         Coordinate (abstraite), CoordinateCube, CoordinateDoubled,
-│       │   │                       Point (record), Direction, Mode
-│       │   └── Exception/          DifferentAxisException
-│       └── test/java/              Tests des deux systèmes de coordonnées
-│
-├── OthelloEngine/                  Module 2 : modèle du jeu et IA (dépend du module 1)
-│   ├── pom.xml
-│   └── src/
-│       ├── main/java/fr/saegroupe8/iut/
-│       │   ├── CUIMain.java        Jeu en console : affichage et placement des anneaux
-│       │   ├── model/
-│       │   │   ├── Model.java      Garde l'état courant et le met à jour
-│       │   │   ├── Team.java       BLACK / WHITE
-│       │   │   ├── actions/        Action (abstraite), Move, RemoveLine
-│       │   │   ├── state/          IState (interface), State (état immuable)
-│       │   │   ├── tokens/         Token (abstraite), Pawn, Ring
-│       │   │   └── factory/        IFactory, FactoryCube, FactoryDoubled
-│       │   └── IA/
-│       │       ├── AI.java         Interface : Action chooseMove(IState state)
-│       │       ├── MinimaxAI.java  Minimax avec alpha-bêta
-│       │       ├── Node.java       Nœud de l'arbre de recherche (état, parent, action)
-│       │       └── MainAI.java     Partie en console : joueur contre IA
-│       └── test/java/              Tests : Action, Factory, IA, Model, State, Token
-│
-└── OthelloGUI/                     Livrable 2 : interface JavaFX, projet Maven autonome
+├── pom.xml                      POM parent (Java, JUnit)
+├── .github/workflows/maven.yml  CI : mvn verify
+├── HexagonalCoordinate/         Coordonnées cubiques [q, r, s] et doublées [ligne, colonne]
+│   └── src/main|test/java/fr/saegroupe8/iut/{Coordinate,Exception}
+├── OthelloEngine/               Dépend de HexagonalCoordinate
+│   └── src/main|test/java/fr/saegroupe8/iut/
+│       ├── CUIMain.java         Placement des anneaux et affichage en console
+│       ├── model/               Model, Team, actions/, state/, tokens/, factory/
+│       └── IA/                  AI, MinimaxAI, Node, MainAI (joueur contre IA)
+└── OthelloGUI/                  Interface JavaFX (voir son README)
 ```
 
-**HexagonalCoordinate** ne dépend de rien. Il représente un plateau hexagonal avec deux systèmes de coordonnées interchangeables, le cubique `[q, r, s]` (avec `q + r + s = 0`) et le « doublé » `[ligne, colonne]`, et fournit voisins, directions, déplacements et alignements.
+## Conception
 
-**OthelloEngine** contient les règles, l'état immuable, les actions, les fabriques de terrains, l'IA et le jeu en console. Il dépend de `HexagonalCoordinate`.
+- **`State`** : état de jeu immuable (`HashMap<Coordinate, Token>`, joueur courant, lignes présentes). Chaque coup renvoie un nouvel état.
+- **`IState`** : opérations utilisées par l'IA et l'interface (`move`, `removeLine`, `availableMoves`, `winner`, `isInField`, `lines`, `rings`, etc.).
+- **`Action`** : type commun à `Move` (départ, arrivée) et `RemoveLine` (5 cases, anneau retiré).
+- **`Model`** : garde l'état courant et délègue à `IState`.
+- **`IFactory`** : fabrique les terrains (vide, de test), en cubique (`FactoryCube`) ou doublé (`FactoryDoubled`).
 
-**OthelloGUI** n'est pas déclaré dans le `pom.xml` racine : il se construit et se lance depuis son propre dossier.
+**IA.** `MinimaxAI` explore l'arbre jusqu'à une profondeur donnée avec élagage alpha-bêta. Évaluation d'une position : victoire ou défaite ±100 000, anneaux retirés d'avance ±1 000 chacun, mobilité ±0,5 par case d'écart, pions d'avance ±2 chacun.
 
----
+## Utilisation
 
-## Comment le modèle est construit
-
-`State` est un état de jeu immuable : une `HashMap<Coordinate, Token>` (valeur `null` pour une case vide), le joueur courant et les lignes présentes. Chaque coup renvoie un nouvel état au lieu de modifier l'ancien, ce qui rend l'exploration de l'IA sans danger.
-
-`IState` regroupe ce dont l'IA et l'interface ont besoin : `move`, `removeLine`, `availableMoves`, `removeToken`, `toggleToken`, `winner`, `isInField`, `lines`, `rings`, `board` et `turn`.
-
-`Action` est une classe abstraite vide, qui sert de type commun à `Move` (départ et arrivée) et à `RemoveLine` (les 5 cases de la ligne et l'anneau retiré).
-
-`Model` garde l'état courant et délègue à `IState`. Ses méthodes modifient l'état stocké et ne renvoient rien.
-
-`IFactory` fournit les terrains (`emptyState`, `testState`, `stateForWhiteLineTest`, `stateForBlackLineTest`, `doubleLineStateTest`), en version cubique (`FactoryCube`) et doublée (`FactoryDoubled`).
-
-### L'IA
-
-`MinimaxAI` implémente `AI`. Elle explore l'arbre des positions jusqu'à une profondeur donnée, en élaguant avec alpha-bêta. Les feuilles sont évaluées par une somme pondérée : victoire ou défaite (±100 000), anneaux retirés d'avance (±1 000 chacun), mobilité des anneaux (±0,5 par case accessible d'écart) et pions d'avance (±2 chacun). Chaque `Node` mémorise son état, son parent et l'action qui y mène, ce qui permet de remonter jusqu'au coup à jouer.
-
----
-
-## Compiler et tester
-
-Il faut un JDK 26 (le code utilise la syntaxe de Java 25 et plus, par exemple des instructions avant `super()` dans `CoordinateCube`) et Maven. À la racine :
+Prérequis : JDK 26, Maven.
 
 ```bash
-mvn clean verify
+mvn clean verify        # compile et lance les tests JUnit 5
+mvn package
 ```
 
-Cette commande compile les deux modules et lance les tests JUnit 5.
-
-## Jouer
-
-Après un `mvn package`, depuis la racine.
-
-Pour affronter l'IA (vous avez les blancs, elle a les noirs, profondeur 3) :
+Jouer contre l'IA (vous avez les blancs, profondeur 3). Les coordonnées se saisissent en cubique, `q r s` :
 
 ```bash
-# Linux / macOS
 java -cp OthelloEngine/target/classes:HexagonalCoordinate/target/classes fr.saegroupe8.iut.IA.MainAI
-
-# Windows
-java -cp "OthelloEngine\target\classes;HexagonalCoordinate\target\classes" fr.saegroupe8.iut.IA.MainAI
+# Windows : java -cp "OthelloEngine\target\classes;HexagonalCoordinate\target\classes" ...
 ```
 
-Les coordonnées se saisissent en cubique, trois entiers séparés par des espaces : `q r s`, par exemple `1 -1 0`. Quand une ligne est à retirer, le jeu demande quel anneau enlever.
-
-Pour placer ses anneaux et voir le terrain :
+Placer des anneaux et afficher le terrain (`Z` `Q` `S` `D` pour le curseur, `X` pour poser un anneau) :
 
 ```bash
 java -cp OthelloEngine/target/classes:HexagonalCoordinate/target/classes fr.saegroupe8.iut.CUIMain
 ```
 
-On déplace le curseur avec `Z`, `Q`, `S`, `D`, et `X` pose un anneau (les joueurs alternent). À l'écran, `o` et `O` sont les anneaux blanc et noir, `.` et `x` les pions blanc et noir, `_` une case vide et `*` le curseur.
+Affichage : `o`/`O` anneau blanc/noir, `.`/`x` pion blanc/noir, `_` case vide, `*` curseur.
 
----
+## Répartition
 
-## Qui a fait quoi
+Elyas Ahmadi : `removeLine`, `isInField`, `getPawnsLines`, classe `Action`, interface `AI`, classe `MainAI`.
 
-Elyas Ahmadi : `removeLine`, `isInField`, `getPawnsLines`, la classe `Action`, l'interface `AI` et la classe `MainAI`.
+## Usage de l'IA
 
-## Où on en est
-
-- [x] Module `HexagonalCoordinate` (cubique et doublé)
-- [x] Modèle : `State`, `Model`, actions, jetons, fabriques
-- [x] Jeu en console (`CUIMain`, `MainAI`)
-- [x] IA Minimax avec élagage alpha-bêta
-- [x] Livrable 2 : interface graphique JavaFX, voir [`OthelloGUI/`](OthelloGUI/README.md) (modes édition, jeu et retrait de ligne, réglage de l'IA, sauvegarde et chargement au format `SAE212`). Deux réglages d'affichage restent à brancher, ils sont détaillés dans ses limites connues.
+Des outils d'IA générative ont servi d'assistant : compréhension d'erreurs, débogage, relecture et mise en forme de la documentation. La conception et la logique du projet ont été réalisées par l'équipe.
 
 ## Organisation Git
 
-`master` ne reçoit que des fonctionnalités terminées. Chaque fonctionnalité a sa branche (par exemple `feature/remove-line`, `feature/ai`), fusionnée dans `master` une fois testée. Chaque membre du groupe commite régulièrement.
+`master` ne reçoit que des fonctionnalités terminées, une branche par fonctionnalité (`feature/remove-line`, `feature/ai`…), fusionnée après test.
